@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="text-center mb-3">
+            <i class="bi bi-kanban" style="font-size: 2rem; color: var(--primary);"></i>
+        </div>
+        <h2 class="auth-title">Create your account</h2>
+        <p class="auth-subtitle">Start organizing your tasks today</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label">{{ field.label }}</label>
+                    <input type="{{ field.field.widget.input_type }}"
+                           name="{{ field.name }}"
+                           value="{{ field.value|default:'' }}"
+                           class="form-control {% if field.errors %}is-invalid{% endif %}"
+                           placeholder="{{ field.label }}"
+                           {% if forloop.first %}autofocus{% endif %}>
+                    {% if field.errors %}
+                        <div class="invalid-feedback">{{ field.errors.0 }}</div>
+                    {% endif %}
+                    {% if field.help_text %}
+                        <small class="form-text" style="font-size:0.75rem; color:var(--text-light);">{{ field.help_text }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary w-100 mt-2">Create Account</button>
+        </form>
+        <div class="auth-footer">
+            Already have an account? <a href="{% url 'login' %}">Sign in</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

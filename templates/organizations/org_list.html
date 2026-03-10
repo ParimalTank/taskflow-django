@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}My Organizations - TaskFlow{% endblock %}
+
+{% block content %}
+<!-- Pending Invitations -->
+{% if pending_invites %}
+<div class="mb-4">
+    <h6 style="font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; font-size:0.8rem;" class="mb-3">
+        <i class="bi bi-envelope me-1"></i>Pending Invitations
+    </h6>
+    {% for invite in pending_invites %}
+    <div class="invite-card">
+        <div class="d-flex align-items-center gap-3">
+            <div class="org-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
+                {{ invite.organization.name|make_list|first|upper }}
+            </div>
+            <div class="flex-grow-1">
+                <div style="font-weight:600;">{{ invite.organization.name }}</div>
+                <small style="color:var(--text-muted);">
+                    Invited by {{ invite.invited_by.username }} as {{ invite.get_role_display }}
+                </small>
+            </div>
+            <div class="d-flex gap-2">
+                <form method="post" action="{% url 'invite_accept' invite.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-sm">Accept</button>
+                </form>
+                <form method="post" action="{% url 'invite_decline' invite.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Decline</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Organizations -->
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h1>Organizations</h1>
+        <p>Your teams and workspaces</p>
+    </div>
+    <a href="{% url 'org_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i>New Organization
+    </a>
+</div>
+
+{% if memberships %}
+    <div class="row g-4">
+        {% for m in memberships %}
+            <div class="col-md-6 col-lg-4">
+                <div class="board-card" onclick="window.location='{% url 'org_detail' m.organization.slug %}'">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="org-icon">{{ m.organization.name|make_list|first|upper }}</div>
+                        <div>
+                            <a href="{% url 'org_detail' m.organization.slug %}" class="board-title mb-0">{{ m.organization.name }}</a>
+                            <span class="role-badge role-{{ m.role|lower }}">{{ m.get_role_display }}</span>
+                        </div>
+                    </div>
+                    <p class="board-desc">{{ m.organization.description|truncatewords:20|default:"No description" }}</p>
+                    <div class="board-meta">
+                        <div class="d-flex gap-3">
+                            <span class="task-count">
+                                <i class="bi bi-columns-gap"></i>
+                                {{ m.organization.boards.count }} board{{ m.organization.boards.count|pluralize }}
+                            </span>
+                            <span class="task-count">
+                                <i class="bi bi-people"></i>
+                                {{ m.organization.memberships.count }} member{{ m.organization.memberships.count|pluralize }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="empty-icon">
+            <i class="bi bi-building"></i>
+        </div>
+        <h4>No organizations yet</h4>
+        <p>Create your first organization to start collaborating with your team.</p>
+        <a href="{% url 'org_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>Create Organization
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

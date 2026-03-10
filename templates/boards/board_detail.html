@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ board.name }} - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-start">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <a href="{% url 'org_detail' org.slug %}" class="btn-icon" style="color:var(--text-muted); text-decoration:none;">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <h1 class="mb-0">{{ board.name }}</h1>
+        </div>
+        {% if board.description %}<p class="ms-5">{{ board.description }}</p>{% endif %}
+    </div>
+    <a href="{% url 'task_create' org.slug board.pk %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i>Add Task
+    </a>
+</div>
+
+<div class="kanban-board">
+    <!-- TO DO -->
+    <div class="kanban-column">
+        <div class="kanban-header">
+            <span class="status-dot todo"></span>
+            <span>To Do</span>
+            <span class="count-badge" data-status="TODO">{{ todo_tasks.count }}</span>
+        </div>
+        <div class="kanban-body dropzone" data-status="TODO">
+            {% for task in todo_tasks %}
+                <div class="task-card" draggable="true" data-task-id="{{ task.pk }}">
+                    <div class="task-title">{{ task.title }}</div>
+                    <div class="task-badges">
+                        <span class="badge-priority {{ task.priority|lower }}">{{ task.get_priority_display }}</span>
+                        {% if task.assigned_to %}
+                            <span class="badge-assignee"><i class="bi bi-person me-1"></i>{{ task.assigned_to.username }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="task-actions">
+                        <a href="{% url 'task_edit' org.slug task.pk %}" class="btn-task"><i class="bi bi-pencil me-1"></i>Edit</a>
+                        <a href="{% url 'task_delete' org.slug task.pk %}" class="btn-task danger"><i class="bi bi-trash3 me-1"></i>Delete</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="empty-msg">No tasks yet</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- IN PROGRESS -->
+    <div class="kanban-column">
+        <div class="kanban-header">
+            <span class="status-dot in-progress"></span>
+            <span>In Progress</span>
+            <span class="count-badge" data-status="IN_PROGRESS">{{ in_progress_tasks.count }}</span>
+        </div>
+        <div class="kanban-body dropzone" data-status="IN_PROGRESS">
+            {% for task in in_progress_tasks %}
+                <div class="task-card" draggable="true" data-task-id="{{ task.pk }}">
+                    <div class="task-title">{{ task.title }}</div>
+                    <div class="task-badges">
+                        <span class="badge-priority {{ task.priority|lower }}">{{ task.get_priority_display }}</span>
+                        {% if task.assigned_to %}
+                            <span class="badge-assignee"><i class="bi bi-person me-1"></i>{{ task.assigned_to.username }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="task-actions">
+                        <a href="{% url 'task_edit' org.slug task.pk %}" class="btn-task"><i class="bi bi-pencil me-1"></i>Edit</a>
+                        <a href="{% url 'task_delete' org.slug task.pk %}" class="btn-task danger"><i class="bi bi-trash3 me-1"></i>Delete</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="empty-msg">No tasks yet</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- DONE -->
+    <div class="kanban-column">
+        <div class="kanban-header">
+            <span class="status-dot done"></span>
+            <span>Done</span>
+            <span class="count-badge" data-status="DONE">{{ done_tasks.count }}</span>
+        </div>
+        <div class="kanban-body dropzone" data-status="DONE">
+            {% for task in done_tasks %}
+                <div class="task-card" draggable="true" data-task-id="{{ task.pk }}">
+                    <div class="task-title">{{ task.title }}</div>
+                    <div class="task-badges">
+                        <span class="badge-priority {{ task.priority|lower }}">{{ task.get_priority_display }}</span>
+                        {% if task.assigned_to %}
+                            <span class="badge-assignee"><i class="bi bi-person me-1"></i>{{ task.assigned_to.username }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="task-actions">
+                        <a href="{% url 'task_edit' org.slug task.pk %}" class="btn-task"><i class="bi bi-pencil me-1"></i>Edit</a>
+                        <a href="{% url 'task_delete' org.slug task.pk %}" class="btn-task danger"><i class="bi bi-trash3 me-1"></i>Delete</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="empty-msg">No tasks yet</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const csrfToken = '{{ csrf_token }}';
+    let draggedCard = null;
+
+    document.querySelectorAll('.task-card[draggable]').forEach(card => {
+        card.addEventListener('dragstart', (e) => {
+            draggedCard = card;
+            card.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+        card.addEventListener('dragend', () => {
+            card.classList.remove('dragging');
+            document.querySelectorAll('.dropzone').forEach(z => z.classList.remove('drag-over'));
+            draggedCard = null;
+        });
+    });
+
+    document.querySelectorAll('.dropzone').forEach(zone => {
+        zone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            zone.classList.add('drag-over');
+        });
+        zone.addEventListener('dragleave', (e) => {
+            if (!zone.contains(e.relatedTarget)) zone.classList.remove('drag-over');
+        });
+        zone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            zone.classList.remove('drag-over');
+            if (!draggedCard) return;
+
+            const taskId = draggedCard.dataset.taskId;
+            const newStatus = zone.dataset.status;
+
+            const emptyMsg = zone.querySelector('.empty-msg');
+            if (emptyMsg) emptyMsg.remove();
+            zone.appendChild(draggedCard);
+
+            document.querySelectorAll('.dropzone').forEach(z => {
+                if (z.querySelectorAll('.task-card').length === 0 && !z.querySelector('.empty-msg')) {
+                    const msg = document.createElement('p');
+                    msg.className = 'empty-msg';
+                    msg.textContent = 'No tasks yet';
+                    z.appendChild(msg);
+                }
+            });
+
+            document.querySelectorAll('.dropzone').forEach(z => {
+                const status = z.dataset.status;
+                const count = z.querySelectorAll('.task-card').length;
+                const badge = document.querySelector(`.count-badge[data-status="${status}"]`);
+                if (badge) badge.textContent = count;
+            });
+
+            fetch(`/tasks/${taskId}/update-status/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                body: JSON.stringify({ status: newStatus }),
+            }).then(res => { if (!res.ok) window.location.reload(); })
+              .catch(() => window.location.reload());
+        });
+    });
+</script>
+{% endblock %}

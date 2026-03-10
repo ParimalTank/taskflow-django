@@ -1,0 +1,740 @@
+/* ─── Root Variables ──────────────────────────────────────────────── */
+:root {
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+    --bg: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-muted: #f1f5f9;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    --border: #e2e8f0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.04);
+    --shadow-xl: 0 20px 40px rgba(0,0,0,0.08);
+    --radius: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --todo-color: #64748b;
+    --progress-color: #f59e0b;
+    --done-color: #10b981;
+    --low-color: #10b981;
+    --medium-color: #f59e0b;
+    --high-color: #ef4444;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────── */
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Navbar ─────────────────────────────────────────────────────── */
+.navbar {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 0;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--primary) !important;
+    letter-spacing: -0.5px;
+}
+
+.navbar .nav-link {
+    color: var(--text-muted) !important;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem !important;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.navbar .nav-link:hover {
+    color: var(--primary) !important;
+    background: var(--bg-muted);
+}
+
+.nav-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--border);
+    margin: 0 0.5rem;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.nav-text {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+.btn-ghost {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.btn-ghost:hover {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+/* ─── Main Content ───────────────────────────────────────────────── */
+.main-content {
+    padding: 2rem 0 4rem;
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────── */
+.btn-primary {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 0.6rem 1.25rem;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+}
+.btn-primary:hover {
+    background: var(--primary-dark) !important;
+    border-color: var(--primary-dark) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99,102,241,0.4);
+}
+
+.btn-outline-secondary {
+    border-radius: 10px;
+    font-weight: 500;
+    border-color: var(--border);
+    color: var(--text-muted);
+}
+.btn-outline-secondary:hover {
+    background: var(--bg-muted);
+    border-color: var(--border);
+    color: var(--text);
+}
+
+/* ─── Page Header ────────────────────────────────────────────────── */
+.page-header {
+    margin-bottom: 2rem;
+}
+.page-header h1 {
+    font-weight: 700;
+    font-size: 1.75rem;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin: 0;
+}
+.page-header p {
+    color: var(--text-muted);
+    margin: 0.25rem 0 0;
+    font-size: 0.95rem;
+}
+
+/* ─── Board Cards ────────────────────────────────────────────────── */
+.board-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+.board-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.board-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: transparent;
+}
+.board-card:hover::before {
+    opacity: 1;
+}
+
+.board-card .board-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text);
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+.board-card .board-title:hover {
+    color: var(--primary);
+}
+
+.board-card .board-desc {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.board-card .board-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.board-card .task-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--bg-muted);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+}
+
+.board-card .board-actions {
+    display: flex;
+    gap: 0.25rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.board-card:hover .board-actions {
+    opacity: 1;
+}
+
+.board-card .btn-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+.board-card .btn-icon:hover {
+    background: var(--bg-muted);
+    color: var(--text);
+}
+.board-card .btn-icon.danger:hover {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+/* ─── Empty State ────────────────────────────────────────────────── */
+.empty-state {
+    text-align: center;
+    padding: 4rem 1rem;
+}
+.empty-state .empty-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--bg-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: var(--text-light);
+}
+.empty-state h4 {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+.empty-state p {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ─── Kanban Board ───────────────────────────────────────────────── */
+.kanban-board {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+}
+
+.kanban-column {
+    flex: 1;
+    min-width: 280px;
+    background: var(--bg-muted);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+}
+
+.kanban-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1rem 0.75rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.kanban-header .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.kanban-header .status-dot.todo { background: var(--todo-color); }
+.kanban-header .status-dot.in-progress { background: var(--progress-color); }
+.kanban-header .status-dot.done { background: var(--done-color); }
+
+.kanban-header .count-badge {
+    background: rgba(0,0,0,0.08);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.1rem 0.5rem;
+    border-radius: 10px;
+    margin-left: auto;
+}
+
+.kanban-body {
+    padding: 0.5rem;
+    flex: 1;
+}
+
+/* ─── Task Cards ─────────────────────────────────────────────────── */
+.task-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    cursor: grab;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+.task-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: transparent;
+}
+.task-card:active {
+    cursor: grabbing;
+}
+
+.task-card .task-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+}
+
+.task-card .task-badges {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.task-card .task-actions {
+    display: flex;
+    gap: 0.25rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.task-card:hover .task-actions {
+    opacity: 1;
+}
+
+.task-card .btn-task {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.15s;
+}
+.task-card .btn-task:hover {
+    background: var(--bg-muted);
+    color: var(--text);
+}
+.task-card .btn-task.danger:hover {
+    background: #fef2f2;
+    color: #ef4444;
+    border-color: #fecaca;
+}
+
+/* ─── Priority & Status Badges ───────────────────────────────────── */
+.badge-priority {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.badge-priority.low {
+    background: #ecfdf5;
+    color: #059669;
+}
+.badge-priority.medium {
+    background: #fffbeb;
+    color: #d97706;
+}
+.badge-priority.high {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+/* ─── Drag and Drop ──────────────────────────────────────────────── */
+.task-card.dragging {
+    opacity: 0.3;
+    transform: rotate(3deg) scale(0.98);
+}
+
+.dropzone {
+    min-height: 120px;
+    transition: all 0.2s;
+    border: 2px dashed transparent;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+.dropzone.drag-over {
+    background: rgba(99, 102, 241, 0.06);
+    border-color: var(--primary-light);
+}
+
+.empty-msg {
+    color: var(--text-light);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+/* ─── Auth Pages ─────────────────────────────────────────────────── */
+.auth-wrapper {
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.auth-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: var(--shadow-lg);
+}
+
+.auth-card .auth-title {
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+
+.auth-card .auth-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+}
+
+.auth-card .form-label {
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+
+.auth-card .form-control {
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    padding: 0.7rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    background: var(--bg);
+}
+.auth-card .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    background: var(--bg-card);
+}
+
+.auth-card .auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+.auth-card .auth-footer a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+.auth-card .auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ─── Form Pages ─────────────────────────────────────────────────── */
+.form-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.form-card .form-control,
+.form-card .form-select {
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    padding: 0.65rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+.form-card .form-control:focus,
+.form-card .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-card .form-label {
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* ─── Delete Confirmation ────────────────────────────────────────── */
+.delete-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+}
+.delete-card .delete-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #fef2f2;
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+    font-size: 1.5rem;
+}
+.delete-card h3 {
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+.delete-card p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-danger {
+    background: #ef4444 !important;
+    border-color: #ef4444 !important;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 0.6rem 1.25rem;
+    box-shadow: 0 2px 8px rgba(239,68,68,0.3);
+}
+.btn-danger:hover {
+    background: #dc2626 !important;
+    border-color: #dc2626 !important;
+}
+
+/* ─── Organization Styles ────────────────────────────────────────── */
+.org-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+.org-icon-lg {
+    width: 48px;
+    height: 48px;
+    font-size: 1.2rem;
+    border-radius: 14px;
+}
+
+.role-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.role-badge.role-owner {
+    background: #fef3c7;
+    color: #92400e;
+}
+.role-badge.role-admin {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+.role-badge.role-member {
+    background: var(--bg-muted);
+    color: var(--text-muted);
+}
+
+/* ─── Invite Card ────────────────────────────────────────────────── */
+.invite-card {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+/* ─── Members List ───────────────────────────────────────────────── */
+.member-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    margin-bottom: 0.5rem;
+    transition: background 0.15s;
+}
+.member-row:hover {
+    background: var(--bg-muted);
+}
+
+/* ─── Tabs ───────────────────────────────────────────────────────── */
+.custom-tabs {
+    border-bottom: 2px solid var(--border);
+}
+.custom-tabs .nav-link {
+    border: none;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+}
+.custom-tabs .nav-link:hover {
+    color: var(--text);
+    border-bottom-color: var(--border);
+}
+.custom-tabs .nav-link.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    background: transparent;
+}
+
+/* ─── Assignee Badge ─────────────────────────────────────────────── */
+.badge-assignee {
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    background: var(--bg-muted);
+    color: var(--text-muted);
+}
+
+/* ─── Btn-icon standalone ────────────────────────────────────────── */
+.btn-icon {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+.btn-icon:hover {
+    background: var(--bg-muted);
+    color: var(--text);
+}
+.btn-icon.danger:hover {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .kanban-board {
+        flex-direction: column;
+    }
+    .kanban-column {
+        min-width: 100%;
+    }
+    .board-card .board-actions {
+        opacity: 1;
+    }
+    .task-card .task-actions {
+        opacity: 1;
+    }
+}

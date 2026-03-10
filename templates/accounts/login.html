@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="text-center mb-3">
+            <i class="bi bi-kanban" style="font-size: 2rem; color: var(--primary);"></i>
+        </div>
+        <h2 class="auth-title">Welcome back</h2>
+        <p class="auth-subtitle">Sign in to your TaskFlow account</p>
+
+        {% if form.errors %}
+            <div class="alert alert-danger border-0 rounded-3 py-2 px-3" style="font-size:0.85rem; background:#fef2f2; color:#dc2626;">
+                <i class="bi bi-exclamation-circle me-1"></i>Invalid username or password.
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" placeholder="Enter your username" required autofocus>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Sign In</button>
+        </form>
+        <div class="auth-footer">
+            Don't have an account? <a href="{% url 'register' %}">Create one</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
